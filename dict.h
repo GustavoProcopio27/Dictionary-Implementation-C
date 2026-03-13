@@ -14,7 +14,7 @@ typedef struct entry{
     char* key;
     void* value;
     size_t element_size;
-    struct _entry *next;
+    struct entry *next;
 } entry;
 
 
@@ -60,7 +60,11 @@ Dict* dict_init();
  *
  * @return Ponteiro para o dicionario iniciado
 **/
-#define dict_init_from_keys(keys_list, value, list_length, type) (_dict_init_from_keys(keys_list, value, list_length, sizeof(type)))
+#define dict_init_from_keys(keys_list, value, list_length, type)                \
+    ({                                                                          \
+        type temp = (value);                                                    \
+        (_dict_init_from_keys(keys_list, &temp, list_length, sizeof(type)));    \
+    })
 Dict* _dict_init_from_keys(char** keys_list, void *value, size_t list_length, size_t element_size);
 
 
@@ -73,7 +77,8 @@ Dict* _dict_init_from_keys(char** keys_list, void *value, size_t list_length, si
  * @brief Macro para adição ou alteração de uma entrada do dicionario
  * 
  * Caso a chave não existe, uma nova entrada é adicionada no dicionario. 
- * Caso a chave já exista, o valor presente na entrada com esta chave é alterada para o valor passado
+ * Caso a chave já exista, o valor presente na entrada com esta chave é alterada para o valor passado.
+ * A entrada sempre é inserida no inicio da lista linkada.
  * 
  * @param dict dict instanciado
  * @param key chave da entrada a ser alterada/inserida
@@ -84,7 +89,7 @@ Dict* _dict_init_from_keys(char** keys_list, void *value, size_t list_length, si
 #define dict_update(dict, key, value, type)             \
     do{                                                 \
         type temp = (value);                            \
-        (_dict_update(dict, key, &temp, sizeof(type)))  \
+        (_dict_update(dict, key, &temp, sizeof(type))); \
     }while(0)
 void _dict_update(Dict* dict, char* key, void* value, size_t element_size);
 

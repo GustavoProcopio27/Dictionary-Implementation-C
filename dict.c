@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <dict.h>
+#include "dict.h"
 
 inline static bool compare_str(char* key1, char*key2)
 {
@@ -23,7 +23,7 @@ Dict* _dict_init_from_keys(char** keys_list,void* value, size_t list_length, siz
     Dict *ptr = malloc(sizeof(Dict));
     if (ptr == NULL) exit(1);
     ptr->head = NULL;
-    for(int i=0;i<list_length;i++)
+    for(size_t i=0;i<list_length;i++)
     {
         _dict_update(ptr,keys_list[i],value,element_size);
     }
